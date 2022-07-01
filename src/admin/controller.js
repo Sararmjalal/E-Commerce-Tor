@@ -3,7 +3,6 @@ import Admin from './model'
 
 import validatePhoneNumber from 'lib/utils/validatePhoneNumber'
 
-
 export default {
   home: (req, res) => {
     res.send('<h1> hello from admin </h1>')
