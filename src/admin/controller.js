@@ -28,7 +28,7 @@ export default {
   
     res.send('ok')
   },
-  loginStepOne:  async (req, res, next) => {
+  loginStepOne:  async (req, res) => {
     try {
       
       await Admin.generateAuthObject(req.body.phone)
