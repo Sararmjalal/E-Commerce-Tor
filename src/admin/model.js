@@ -8,6 +8,10 @@ import validatePhoneNumber from 'lib/utils/validatePhoneNumber'
 
 const dbDirectory = path.join(process.cwd(), '/src/admin/db')
 
+if (!existsSync(dbDirectory)) {
+  mkdirSync(dbDirectory)
+}
+
 class AdminSchema {
 
   constructor() {
