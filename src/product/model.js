@@ -11,6 +11,11 @@ import jwt from "jsonwebtoken";
 
 const dbDirectory = path.join(process.cwd(), "/src/product/db");
 
+
+if (!existsSync(dbDirectory)) {
+  mkdirSync(dbDirectory)
+}
+
 class ProductSchema {
   constructor() {
     this.cache = null;
@@ -57,6 +62,7 @@ class ProductSchema {
       this.doesCacheneedsUpdate = true;
 
       return thisProduct;
+      
     } catch (error) {
       throw error;
     }
@@ -80,6 +86,7 @@ class ProductSchema {
       this.doesCacheneedsUpdate = false;
 
       return result;
+
     } catch (error) {
       console.log("Error in findAll");
       console.log(error);
@@ -97,6 +104,7 @@ class ProductSchema {
       );
 
       return thisProduct;
+
     } catch (error) {
       console.log("Error in findById");
       console.log(error);
@@ -127,6 +135,7 @@ class ProductSchema {
       this.doesCacheneedsUpdate = true;
 
       return "ok";
+
     } catch (error) {
       throw error;
     }
@@ -134,9 +143,11 @@ class ProductSchema {
 
   async getTopProducts() {
     try {
+
       return deepClone(await this.findAll())
         .sort((a, b) => b.averageScore - a.averageScore)
         .slice(0, 3);
+
     } catch (error) {
       console.log("Error in getTopProducts");
       console.log(error);

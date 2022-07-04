@@ -1,6 +1,7 @@
 import AdminRouter from "admin/router";
 import ProductRouter from "product/router";
 import RateRouter from "rate/router";
+import CommentRouter from "comment/router";
 
 export default (app) => {
   app.get("/", (req, res, next) => {
@@ -8,6 +9,11 @@ export default (app) => {
   });
 
   app.use("/admin/", AdminRouter);
+
   app.use("/product/", ProductRouter);
+
   app.use("/rate/", RateRouter);
+
+  app.use("/comment/", CommentRouter);
+  
 };
