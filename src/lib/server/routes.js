@@ -2,6 +2,7 @@ import AdminRouter from "admin/router";
 import ProductRouter from "product/router";
 import RateRouter from "rate/router";
 import CommentRouter from "comment/router";
+import CartRouter from "cart/router";
 
 export default (app) => {
   app.get("/", (req, res, next) => {
@@ -15,5 +16,7 @@ export default (app) => {
   app.use("/rate/", RateRouter);
 
   app.use("/comment/", CommentRouter);
-  
+
+  app.use("/cart/", CartRouter);
+
 };

@@ -10,8 +10,8 @@ router.post("/edit", ProductController.editProduct);
 
 router.get("/", ProductController.getAllProducts);
 
-router.get("/:_id", ProductController.getSingleProduct);
-
 router.get("/top-products", ProductController.getTopProducts);
+
+router.get("/:_id", ProductController.getSingleProduct);
 
 export default router;

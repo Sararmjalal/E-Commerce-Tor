@@ -32,10 +32,7 @@ export default {
 
       const thisComment = deepClone(await Comment.getProductComments(thisProduct._id))
 
-      thisComment.forEach((item, i) => {
-        delete item.productId
-        thisComment[i].user = userCache[item.userId]
-      })
+      thisComment.forEach((item, i) => item)
   
       return res.status(200).json(thisComment)
       

@@ -22,7 +22,7 @@ class ProductSchema {
     this.doesCacheneedsUpdate = true;
   }
 
-  async create({ title, price, quantity, description, imgurl }) {
+  async create({ title, price, quantity, color, type, inStore, description, imgurl }) {
     try {
       print("before if");
       if (
@@ -31,6 +31,10 @@ class ProductSchema {
         isNaN(Number(price)) ||
         !quantity ||
         isNaN(Number(quantity)) ||
+        !color ||
+        !type ||
+        !inStore ||
+        isNaN(Number(inStore)) ||
         !description ||
         !imgurl
       )
@@ -40,6 +44,11 @@ class ProductSchema {
       const thisProduct = {
         _id: UID("ECP"),
         title,
+        price,
+        quantity,
+        color,
+        type,
+        inStore,
         description,
         imgurl,
         averageScore: 0,

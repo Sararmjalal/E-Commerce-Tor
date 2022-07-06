@@ -11,7 +11,6 @@ export default {
         msg: "successfully created this product",
         _id: thisProduct._id,
       });
-      
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
@@ -25,6 +24,9 @@ export default {
         title: req.body.data.title,
         price: req.body.data.price,
         quantity: req.body.data.quantity,
+        color: req.body.data.color,
+        type: req.body.data.type,
+        inStore: req.body.data.inStore,
         description: req.body.data.description,
         imgurl: req.body.data.imgurl,
       };
@@ -36,7 +38,6 @@ export default {
       await Product.findByIdAndUpdate(thisProduct._id, realData);
 
       return res.status(200).json({ msg: "Product successfully edited" });
-
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
@@ -49,7 +50,6 @@ export default {
       products.forEach((product) => product);
 
       return res.json(products);
-
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
@@ -67,19 +67,18 @@ export default {
           .json({ msg: "bad request: no such Product exists" });
 
       return res.json(thisProduct);
-
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
   },
   getTopProducts: async (req, res) => {
+    print("0");
     try {
+      print("1");
       const thisProducts = deepClone(await Product.getTopProducts());
+      print("2");
 
-      thisProducts.forEach((item) => delete item.scores);
-
-      return res.status(200).json(theseBlogs);
-
+      return res.status(200).json(thisProducts);
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
