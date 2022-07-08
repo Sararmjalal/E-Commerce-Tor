@@ -1,2 +1,0 @@
-// haha
-"use strict";

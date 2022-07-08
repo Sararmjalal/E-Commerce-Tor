@@ -1,6 +1,17 @@
 
 import jwt from 'jsonwebtoken'
+import AdminModel from 'admin/model'
 
+export async function requireAdminAuth(admin) {
+
+  if (!admin || !admin._id) throw new Error('unathorized')
+  
+  const thisAdmin = await AdminModel.findById(admin._id)
+
+  if (!thisAdmin || !thisAdmin._id) throw new Error('unathorized')
+
+  return thisAdmin
+}
 
 async function decodeToken(token) {
   const arr = token.split(' ');
@@ -22,6 +33,7 @@ export default async function adminAuth(req, res, next) {
   try {
 
     const token = req.headers.a_auth;
+    
 
     if (token != null) {
       const admin = await decodeToken(token);

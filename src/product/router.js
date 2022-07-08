@@ -1,12 +1,13 @@
 import express from "express";
 import ProductController from "./controller";
-import userAuth from "lib/utils/userAuth";
+
+import adminAuth from 'lib/utils/adminAuth'
 
 const router = express.Router();
 
-router.post("/create", ProductController.createProduct);
+router.post("/create", adminAuth, ProductController.createProduct);
 
-router.post("/edit", ProductController.editProduct);
+router.post("/edit", adminAuth,  ProductController.editProduct);
 
 router.get("/", ProductController.getAllProducts);
 

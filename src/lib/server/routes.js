@@ -3,6 +3,7 @@ import ProductRouter from "product/router";
 import RateRouter from "rate/router";
 import CommentRouter from "comment/router";
 import CartRouter from "cart/router";
+import CategoryRouter from 'category/router'
 
 export default (app) => {
   app.get("/", (req, res, next) => {
@@ -18,5 +19,7 @@ export default (app) => {
   app.use("/comment/", CommentRouter);
 
   app.use("/cart/", CartRouter);
+
+  app.use('/category/', CategoryRouter)
 
 };

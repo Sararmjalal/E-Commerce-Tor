@@ -7,7 +7,7 @@ import {
 } from "fs";
 import path from "path";
 import UID from "lib/utils/UID";
-import jwt from "jsonwebtoken";
+
 
 const dbDirectory = path.join(process.cwd(), "/src/product/db");
 
@@ -16,48 +16,65 @@ if (!existsSync(dbDirectory)) {
   mkdirSync(dbDirectory)
 }
 
+/*
+
+  variables: {
+    cpu: ['coreI7'],
+    moreInfo: ['kheyli qashange too jibam ja mishe taze']
+    ports: ['hdmi', 'wifi']
+  }
+
+
+*/
+
 class ProductSchema {
   constructor() {
     this.cache = null;
     this.doesCacheneedsUpdate = true;
   }
 
-  async create({ title, price, quantity, color, type, inStore, description, imgurl }) {
+  async create(data) {
+    
     try {
-      print("before if");
+      
+      const { title, price, quantity, description,isAvalible, images, categoryId, variables } = data;
+      print('***************')
+      print(data)
       if (
         !title ||
         !price ||
         isNaN(Number(price)) ||
         !quantity ||
         isNaN(Number(quantity)) ||
-        !color ||
-        !type ||
-        !inStore ||
-        isNaN(Number(inStore)) ||
         !description ||
-        !imgurl
-      )
-        throw new Error("bad input");
+        !images ||
+        !Array.isArray(images)  ||
+        !images[0] ||
+        !categoryId ||
+        !variables
 
-      print("after if");
+      ) throw new Error("bad input");
+
+      Object.entries(variables).forEach(([key, value]) => {
+        print(value)
+        if (!Array.isArray(value)) throw new Error('bad input')
+      })
+
       const thisProduct = {
         _id: UID("ECP"),
         title,
         price,
         quantity,
-        color,
-        type,
-        inStore,
+        isAvalible: isAvalible ? isAvalible : false,
         description,
-        imgurl,
+        categoryId,
+        variables,
+        images,
         averageScore: 0,
         scores: {},
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-
-      print("after this product");
 
       writeFileSync(
         path.join(
@@ -73,6 +90,7 @@ class ProductSchema {
       return thisProduct;
       
     } catch (error) {
+      printError('[error in create product ]', error)
       throw error;
     }
   }
@@ -126,9 +144,7 @@ class ProductSchema {
     try {
       const thisProduct = await this.findById(_id);
 
-      Object.entries(data).forEach(
-        ([key, value]) => (thisProduct[key] = value)
-      );
+      Object.entries(data).forEach(([key, value]) => thisProduct[key] = value)
 
       thisProduct.updatedAt = new Date().toISOString();
 
@@ -150,12 +166,12 @@ class ProductSchema {
     }
   }
 
-  async getTopProducts() {
+  async getTopProducts(number) {
     try {
 
       return deepClone(await this.findAll())
         .sort((a, b) => b.averageScore - a.averageScore)
-        .slice(0, 3);
+        .slice(0, number);
 
     } catch (error) {
       console.log("Error in getTopProducts");

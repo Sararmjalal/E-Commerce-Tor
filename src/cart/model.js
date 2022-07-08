@@ -25,7 +25,8 @@ class CartSchema {
     this.doesCacheneedsUpdate = true;
   }
 
-  async addToCart({productId, quantity}) {
+  async addToCart({ productId, quantity }) {
+    
     try {
       
       if (!quantity || isNaN(Number(quantity)) || !productId) throw new Error("bad input")
