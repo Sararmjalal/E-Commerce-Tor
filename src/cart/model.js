@@ -7,7 +7,7 @@ import {
 } from "fs";
 import path from "path";
 import UID from "lib/utils/UID";
-import jwt from "jsonwebtoken";
+
 import Product from "../product/model";
 
 const dbDirectory = path.join(process.cwd(), "/src/cart/db");
