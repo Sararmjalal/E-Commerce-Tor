@@ -26,5 +26,17 @@ router.get('/', async(req, res) => {
 
   }
 })
+router.post('/delete', async (req,res) => {
+  try {
+    const thisCategory = await Category.deleteCategory( req.body._id );
+  
+    return res.status(201).json({
+      msg: "successfully deleted this category",
+      _id: thisCategory._id,
+    });
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+})
 
 export default router;

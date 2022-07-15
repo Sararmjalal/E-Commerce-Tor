@@ -66,6 +66,7 @@ class CategorySchema {
       _id: UID('cat'),
       name,
       variables,
+      del: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
@@ -139,6 +140,7 @@ class CategorySchema {
 
       if (!thisCategory) throw new Error('no such category exists in the database')
 
+
       Object.entries(thisCategory.variables).forEach(([key, value]) => {
         if (!(key in variables)) throw new Error(`key ${key} doenst exists in variables `)
        
@@ -155,8 +157,32 @@ class CategorySchema {
       throw error      
     }
   }
+  async deleteCategory(_id) {
+    try {
 
+      const thisCategory = deepClone(await this.findById(_id))
 
+      if (!thisCategory) throw new Error('no such category exists in the database')
+      thisCategory.del = !thisCategory.del
+
+      thisCategory.updatedAt = new Date().toISOString();
+
+      writeFileSync(
+      path.join(
+        dbDirectory,
+        `${thisCategory._id}.txt`,
+        ),
+        JSON.stringify(thisCategory),
+        "utf8"
+      );
+
+      this.doesCacheneedsUpdate = true;
+      return thisCategory
+    } catch (error) {
+      print('salam')
+      throw error      
+    }
+  }
 } 
 
 
