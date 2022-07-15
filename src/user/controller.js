@@ -90,5 +90,17 @@ export default {
       return res.status(500).json({ msg: error.message })
     }
   },
+  me: async (req, res, next) => {
+
+    try {
+      
+      const thisUser = await UserModel.authorizeUser(req.user)
+
+      return res.status(200).json(thisUser)
+
+    } catch (error) {
+      throw error
+    }
+  }
 
 }

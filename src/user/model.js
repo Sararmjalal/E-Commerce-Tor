@@ -152,7 +152,7 @@ class UserSchema {
 
   async generateAuthObject(phone) {
 
-    const thisUser = await this.findByPhone(phone)
+    const thisUser = deepClone(await this.findByPhone(phone))
 
     if (!thisUser) throw new Error('bad request: no such user exists in our database')
 
@@ -162,7 +162,28 @@ class UserSchema {
     }
 
     await this.findByIdAndUpdate(thisUser._id, { authObj })
+
+    this.doesCacheneedsUpdate = true
     
+  }
+
+  async removeAuthCode(phone) {
+
+    print('*************************')
+    print('this.removeAuthCode called')
+    print('*************************')
+    const thisUser = deepClone(await this.findByPhone(phone))
+
+    if (!thisUser) throw new Error('bad request: no such admin found')
+
+
+    thisUser.authObj = null
+
+    thisUser.updatedAt = new Date().toISOString()
+
+    writeFileSync(path.join(dbDirectory, `${thisUser._id}.txt`), JSON.stringify(thisUser), "utf8");
+
+    this.doesCacheneedsUpdate = true
   }
 
   async checkAuthCode({ phone, code }) {
@@ -174,6 +195,8 @@ class UserSchema {
     if (code !== thisUser.authObj.code) throw new Error('wrong code')
 
     if (getTimeDifference(thisUser.authObj.date, new Date().toISOString()) > 200000) throw new Error("time's up")
+
+    this.removeAuthCode(phone)
 
     return thisUser
   }

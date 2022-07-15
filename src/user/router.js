@@ -12,6 +12,8 @@ router.post('/login-one', UserController.login_stepOne)
 
 router.post('/login-two', UserController.login_stepTwo)
 
+router.post('/me', UserController.me)
+
 // router.get('/', AdminController.home)
 
 // router.post('/create', AdminController.createAdmin)
