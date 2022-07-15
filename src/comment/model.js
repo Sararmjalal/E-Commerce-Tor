@@ -72,7 +72,10 @@ class CommentSchema {
     try {
       const allProducts = await this.findAll()
 
-      return allProducts
+      console.log("********")
+      console.log(allProducts)
+
+      return allProducts.filter(item => item.productId === productId)
 
     } catch (error) {
       console.log("Error in getProductComment")
