@@ -37,7 +37,7 @@ class ProductSchema {
     
     try {
       
-      const { title, price, quantity, description,isAvalible, images, categoryId, variables } = data;
+      const { title, price, quantity, description, isAvalible, images, categoryId, variables } = data;
       print('***************')
       print(data)
       if (
