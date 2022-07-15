@@ -24,9 +24,8 @@ class CommentSchema {
 
   async create({ text, productId, userId }) {
     try {
-
+      
       if (!text || !productId) throw new Error('bad request: bad input')
-      console.log(thisUser)
 
       const thisComment = {
         _id: UID("COM"),
@@ -42,6 +41,7 @@ class CommentSchema {
       return thisComment
       
     } catch (error) {
+      printError(error)
       throw error
     }
   }

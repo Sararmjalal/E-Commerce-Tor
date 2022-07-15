@@ -207,6 +207,8 @@ class UserSchema {
   }
 
   async authorizeUser(user) {
+    console.log(user)
+    
     if (!user || !user._id) throw new Error('unathorized')
 
     const thisUser = await this.findById(user._id)
