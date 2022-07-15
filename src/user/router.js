@@ -4,10 +4,13 @@ import UserController from './controller'
 
 const router = express.Router();
 
-
 router.post('/sign-up-one', UserController.signup_stepOne)
 
 router.post('/sign-up-two', UserController.signup_stepTwo)
+
+router.post('/login-one', UserController.login_stepOne)
+
+router.post('/login-two', UserController.login_stepTwo)
 
 // router.get('/', AdminController.home)
 

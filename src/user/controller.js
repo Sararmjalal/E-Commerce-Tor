@@ -38,6 +38,8 @@ export default {
       if (!req.body.phone || !req.body.code) throw new Error('bad request')
       const validPhone = validatePhoneNumber(req.body.phone)
 
+      if (!(validPhone in userTemp)) throw new Error("time's up")
+
       const thisUser = deepClone(userTemp[validPhone])
 
       if (thisUser.code !== req.body.code) throw new Error('wrong code')
@@ -46,24 +48,47 @@ export default {
 
       delete userTemp[validPhone] 
 
-      await UserModel.create({
+      const thisUserB = await UserModel.create({
         name: thisUser.name,
         phone: thisUser.phone
       })
 
+      const token = UserModel.createToken(thisUserB._id)
+
       res.status(200).json({
-        msg: 'ok'
+        token
       })
 
     } catch (error) {
       return res.status(500).json({msg: error.message})
     }
   },
-  login_stepOne: async () => {
+  login_stepOne: async (req,res,next) => {
+    try {
+      if (!req.body.phone) throw new Error('bad request: bad inputs')
+      const validPhone = validatePhoneNumber(req.body.phone)
 
+      await UserModel.generateAuthObject(validPhone)
+
+      return res.status(200).json({ msg: 'ok' })
+    } catch (error) {
+      return res.status(500).json({ msg: error.message })
+    }
   },
-  login_stepTwo: async () => {
+  login_stepTwo: async (req,res,next) => {
+    try {
+      if (!req.body.phone || !req.body.code) throw new Error('bad request: bad inputs')
+      const validPhone = validatePhoneNumber(req.body.phone)
 
+      const thisUser = await UserModel.checkAuthCode({ code: req.body.code, phone: validPhone })
+
+      const token = UserModel.createToken(thisUser._id)
+      
+      return res.status(200).json({ token })
+      
+    } catch (error) {
+      return res.status(500).json({ msg: error.message })
+    }
   },
 
 }

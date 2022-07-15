@@ -9,6 +9,8 @@ import path from "path";
 import UID from "lib/utils/UID";
 import jwt from 'jsonwebtoken'
 import validatePhoneNumber from 'lib/utils/validatePhoneNumber'
+import { getTimeDifference } from 'lib/date'
+
 
 const dbDirectory = path.join(process.cwd(), "/src/user/db");
 
@@ -43,6 +45,8 @@ class UserSchema {
     writeFileSync(path.join(dbDirectory, `${thisUser._id}.txt`), JSON.stringify(thisUser), "utf8")
 
     this.doesCacheneedsUpdate = true
+
+    return thisUser
   }
 
   async findAll() {
@@ -169,7 +173,7 @@ class UserSchema {
     
     if (code !== thisUser.authObj.code) throw new Error('wrong code')
 
-    if ((new Date().getTime() - new Date(thisUser.authObj.date).getTime ) > 200000) throw new Error("time's up")
+    if (getTimeDifference(thisUser.authObj.date, new Date().toISOString()) > 200000) throw new Error("time's up")
 
     return thisUser
   }
