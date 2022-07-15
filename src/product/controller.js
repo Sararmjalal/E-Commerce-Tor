@@ -8,11 +8,14 @@ export default {
 
     try {
 
-      const thisAdmin = await requireAdminAuth(req.admin)
+      // const thisAdmin = await requireAdminAuth(req.admin)
 
       const { categoryId, variables, ...rest } = req.body
       
       await CategoryModel.compareVariables(categoryId, variables)
+
+      const thisCategory = await CategoryModel.findById(categoryId)
+      if (thisCategory.del === true) throw new Error('no such category exists in the database') 
 
       print('category ok  ')
       const thisProduct = await Product.create({ categoryId, variables, ...rest });
@@ -57,7 +60,6 @@ export default {
     try {
       const products = deepClone(await Product.findAll());
 
-      products.forEach((product) => product);
 
       return res.json(products);
     } catch (error) {
