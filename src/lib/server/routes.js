@@ -5,6 +5,8 @@ import CommentRouter from "comment/router";
 import CartRouter from "cart/router";
 import CategoryRouter from 'category/router'
 
+import userRouter from 'user/router'
+
 export default (app) => {
   app.get("/", (req, res, next) => {
     res.send('<h1> hello <span style="color: red" >world</span> </h1>');
@@ -21,5 +23,8 @@ export default (app) => {
   app.use("/cart/", CartRouter);
 
   app.use('/category/', CategoryRouter)
+
+  app.use('/user/', userRouter)
+  
 
 };
