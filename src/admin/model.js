@@ -153,9 +153,23 @@ class AdminSchema {
     }
 
     await this.findByIdAndUpdate(thisAdmin._id, { authObj })
-    
+  
+  }
 
+  
+  async removeAuthCode(phone) {
 
+    const thisAdmin = deepClone(await this.findByPhone(phone))
+
+    if (!thisAdmin) throw new Error('bad request: no such admin found')
+
+    thisAdmin.authObj = null
+
+    thisAdmin.updatedAt = new Date().toISOString()
+
+    writeFileSync(path.join(dbDirectory, `${thisAdmin._id}.txt`), JSON.stringify(thisAdmin), "utf8");
+
+    this.doesCacheneedsUpdate = true
   }
 
   async checkAuthCode({ phone, code }) {
@@ -166,7 +180,9 @@ class AdminSchema {
     
     if (code !== thisAdmin.authObj.code) throw new Error('wrong code')
 
-    if ((new Date().getTime() - new Date(thisAdmin.authObj.date).getTime ) > 200000) throw new Error("time's up")
+    if ((new Date().getTime() - new Date(thisAdmin.authObj.date).getTime) > 200000) throw new Error("time's up")
+    
+    this.removeAuthCode(phone)
 
     return thisAdmin
   }

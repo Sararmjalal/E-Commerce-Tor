@@ -169,13 +169,9 @@ class UserSchema {
 
   async removeAuthCode(phone) {
 
-    print('*************************')
-    print('this.removeAuthCode called')
-    print('*************************')
     const thisUser = deepClone(await this.findByPhone(phone))
 
-    if (!thisUser) throw new Error('bad request: no such admin found')
-
+    if (!thisUser) throw new Error('bad request: no such user found')
 
     thisUser.authObj = null
 

@@ -17,12 +17,13 @@ async function decodeToken(token) {
   const arr = token.split(' ');
 
   try {
+    
     if (arr[0] === 'at') {
       return jwt.verify(arr[1], 'ADMIN_SECRET');
     }
   
     throw new Error('Please Re-Sign In')
-  } catch (error) { 
+  } catch (error) {
     printError(error)
     throw error
   }
@@ -34,10 +35,8 @@ export default async function adminAuth(req, res, next) {
 
     const token = req.headers.a_auth;
     
-
     if (token != null) {
       const admin = await decodeToken(token);
-      print('this admin : ', admin)
       req.admin = admin;
     } else {
       req.admin = null;
