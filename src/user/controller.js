@@ -6,13 +6,16 @@ import validatePhoneNumber from 'lib/utils/validatePhoneNumber'
 const userTemp = {}
 
 export default {
-  signup_stepOne: async (req,res,next) => {
+  signup_stepOne: async (req, res, next) => {
 
     try {
-
       
       if (!req.body.phone || !req.body.name) throw new Error('bad request: bad inputs')
       const validPhone = validatePhoneNumber(req.body.phone)
+
+      const doesExist = await UserModel.checkIfUserExists(validPhone)
+
+      if (doesExist) throw new Error('this user already exists in the database')
 
       const thisData = {
         name: req.body.name,
@@ -24,6 +27,7 @@ export default {
       
       userTemp[thisData.phone] = thisData
 
+      print(userTemp)
       setTimeout(() => delete userTemp[thisData.phone], 200 * 1000)
 
       return res.json({ msg: 'ok' })
@@ -37,6 +41,9 @@ export default {
       
       if (!req.body.phone || !req.body.code) throw new Error('bad request')
       const validPhone = validatePhoneNumber(req.body.phone)
+
+      print(userTemp)
+      print(validPhone)
 
       if (!(validPhone in userTemp)) throw new Error("time's up")
 

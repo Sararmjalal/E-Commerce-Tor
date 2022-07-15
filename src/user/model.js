@@ -11,7 +11,6 @@ import jwt from 'jsonwebtoken'
 import validatePhoneNumber from 'lib/utils/validatePhoneNumber'
 import { getTimeDifference } from 'lib/date'
 
-
 const dbDirectory = path.join(process.cwd(), "/src/user/db");
 
 if (!existsSync(dbDirectory)) {
@@ -95,13 +94,13 @@ class UserSchema {
 
     const allUsers = await this.findAll()
 
-    const thisUser = allUsers.find(admin => {
+    const thisUser = allUsers.find(user => {
 
-      return admin.phone == validPhone
+      return user.phone == validPhone
     })
 
 
-    if (!thisUser) throw new Error('bad request: no such admin exists in our database')
+    if (!thisUser) throw new Error('bad request: no such user exists in our database')
 
     return thisUser
   }
@@ -114,7 +113,7 @@ class UserSchema {
       const thisUser = await this.findById(_id)
 
 
-      if (!thisUser) throw new Error('bad request: no such admin found')
+      if (!thisUser) throw new Error('bad request: no such user found')
 
       let updated = false
       if (name) {
@@ -148,6 +147,16 @@ class UserSchema {
       },
       'USER_SECRET'
     )
+  }
+
+  async checkIfUserExists(phone) {
+    try {
+      const thisUser = await this.findByPhone(phone)
+      if (!thisUser) return false
+      return true
+    } catch (error) {
+      return false
+    }
   }
 
   async generateAuthObject(phone) {
