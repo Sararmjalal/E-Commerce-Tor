@@ -151,7 +151,6 @@ class CategorySchema {
       })
 
     } catch (error) {
-      print('salam')
       throw error      
     }
   }
