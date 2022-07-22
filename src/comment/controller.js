@@ -36,6 +36,7 @@ export default {
         await Comment.getProductComments(thisProduct._id)
       );
 
+      
       return res.status(200).json(thisComment);
     } catch (error) {
       return res.json({ msg: error.message });

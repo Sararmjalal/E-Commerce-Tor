@@ -101,6 +101,23 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  userEdit: async (req, res) => {
+    try {
+
+      const thisUser = await UserModel.authorizeUser(req.user)
+
+      if (!req.body.name) throw new Error('bad input')
+
+      const name = req.body.name
+
+      await UserModel.findByIdAndUpdate(thisUser._id, {name})
+
+      return res.status(200).json({ msg: 'user edited' })
+      
+    } catch (error) {
+      throw error
+    }
   }
 
 }
