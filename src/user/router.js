@@ -14,12 +14,8 @@ router.post('/login-two', UserController.login_stepTwo)
 
 router.post('/me', UserController.me)
 
-// router.get('/', AdminController.home)
-
-// router.post('/create', AdminController.createAdmin)
-
-// router.post('/login-step-one', AdminController.loginStepOne)
-
-// router.post('/login-step-two', AdminController.loginStepTwo)
+router.post('/edit', (req, res, next) => {
+  
+})
 
 export default router;
