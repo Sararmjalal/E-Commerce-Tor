@@ -4,10 +4,11 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  unlinkSync
 } from "fs";
 import path from "path";
 import UID from "lib/utils/UID";
-import jwt from "jsonwebtoken";
+
 
 const dbDirectory = path.join(process.cwd(), "/src/comment/db");
 
@@ -23,23 +24,24 @@ class CommentSchema {
 
   async create({ text, productId, userId }) {
     try {
-
+      
       if (!text || !productId) throw new Error('bad request: bad input')
 
-      const thisProduct = {
-        _id: UID("ECC"),
+      const thisComment = {
+        _id: UID("COM"),
         text,
         productId,
         userId,
         createdAt: new Date().toISOString()
       }
 
-      writeFileSync(path.join(dbDirectory, `${thisProduct._id}.txt`), JSON.stringify(thisProduct), "utf8")
+      writeFileSync(path.join(dbDirectory, `${thisComment._id}.txt`), JSON.stringify(thisComment), "utf8")
 
       this.doesCacheneedsUpdate = true
-      return thisProduct
+      return thisComment
       
     } catch (error) {
+      printError(error)
       throw error
     }
   }
@@ -61,7 +63,7 @@ class CommentSchema {
       return result
       
     } catch (error) {
-      console.log("Error in findAll")
+      console.log("Error in findAll comments")
       console.log(error)
 
       return []
@@ -70,12 +72,12 @@ class CommentSchema {
 
   async getProductComments(productId) {
     try {
-      const allProducts = await this.findAll()
+      const allComment = await this.findAll()
 
       console.log("********")
-      console.log(allProducts)
+      console.log(allComment)
 
-      return allProducts.filter(item => item.productId === productId)
+      return allComment.filter(item => item.productId === productId)
 
     } catch (error) {
       console.log("Error in getProductComment")
@@ -85,6 +87,7 @@ class CommentSchema {
     }
   }
 }
+
 
 const Comment = new CommentSchema()
 

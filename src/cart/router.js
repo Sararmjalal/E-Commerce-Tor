@@ -1,13 +1,14 @@
 import express from "express";
 import CartController from "./controller";
 import userAuth from "lib/utils/userAuth";
+import asyncHandler from "lib/utils/asyncHandler";
 
 const router = express.Router();
 
-router.post("/add", CartController.addProduct);
+router.get('/', asyncHandler(CartController.getCart))
+router.post("/add", asyncHandler(CartController.addtoCart));
 
-router.post("/edit", CartController.editProductOfCart);
-
-router.get("/calculate-price", CartController.calculatePrice);
+router.post("/remove", asyncHandler(CartController.removeItem));
+router.post("/change", asyncHandler(CartController.changeItem));
 
 export default router;

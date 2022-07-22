@@ -1,5 +1,7 @@
 import express from "express";
 import CommentController from "./controller";
+// import authorizeUser from '../user/model/authorizeUser'
+// import adminAuth from 'lib/utils/adminAuth'
 
 const router = express.Router();
 

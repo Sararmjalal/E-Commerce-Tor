@@ -8,8 +8,6 @@ import {
 import path from "path";
 import UID from "lib/utils/UID";
 
-import Product from "../product/model";
-
 const dbDirectory = path.join(process.cwd(), "/src/cart/db");
 const productDbDirectory = path.join(process.cwd(), "/src/product/db");
 
@@ -25,18 +23,33 @@ class CartSchema {
     this.doesCacheneedsUpdate = true;
   }
 
-  async addToCart({ productId, quantity }) {
+  async addToCart({ productId, userId }) {
     
     try {
       
-      if (!quantity || isNaN(Number(quantity)) || !productId) throw new Error("bad input")
+      if (!productId) throw new Error("bad input")
+      
+      let thisCart = await this.findByUserId(userId)
 
-      const thisCart = {
-        _id: UID("ECC"),
-        productId,
-        quantity,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+      if (!thisCart) {
+
+        thisCart =  {
+          _id: UID("ECC"),
+          items: [],
+          userId,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+
+      }
+
+      const p = thisCart.items.findIndex(item => item.productId == productId)
+
+      if (p === -1) {
+        thisCart.items.push({
+          productId,
+          quantity: 1
+        })
       }
 
       writeFileSync(
@@ -50,8 +63,6 @@ class CartSchema {
 
       this.doesCacheneedsUpdate = true;
 
-      return thisCart;
-
     } catch (error) {
       throw error;
     }
@@ -59,16 +70,14 @@ class CartSchema {
 
   async findAll() {
     try {
-      if (!this.doesCacheneedsUpdate || this.cache) return this.cache;
+      if (!this.doesCacheneedsUpdate && this.cache) return this.cache;
 
       const result = readdirSync(dbDirectory).map((item) => {
-        const thisCart = JSON.parse(
+        return JSON.parse(
           readFileSync(path.join(dbDirectory, item), {
             encoding: "utf-8",
           })
         );
-
-        return thisCart;
       });
 
       this.cache = result;
@@ -84,82 +93,117 @@ class CartSchema {
     }
   }
 
-  async findByProductId(_id) {
+  async findByUserId(userId) {
     try {
+      const allCart = deepClone(await this.findAll())
 
-      const allProductsCart = await this.findAll()
-
-      const thisProduct = JSON.parse(
-        readFileSync(path.join(productDbDirectory, `${_id}.txt`), {
-          encoding: "utf8",
-        })
-      );
-      const thisProductCart = allProductsCart.find(product => {
-
-        return product.productId == thisProduct._id
-      })
-
-      if (!thisProductCart) throw new Error('bad request: no such product exists in our database')
-
-      return thisProductCart;
+      return allCart.find(cart => cart.userId == userId)
 
     } catch (error) {
-      console.log("Error in findById");
-      console.log(error);
-
-      return null;
+      throw error
     }
   }
 
-  async findByIdAndUpdate(_id, data) {
+  async removeItem({ userId, productId }) {
+    
     try {
+      
+      const thisCart = deepClone(await this.findByUserId(userId))
+      
+      if (!thisCart) throw new Error('wtf')
+      
+      const p = thisCart.items.findIndex(item => item.productId == productId)
 
-      const thisCart = await this.findByProductId(_id);
+      if (p != -1) {
+        thisCart.items.splice(p, 1)
 
-      Object.entries(data).forEach(
-        ([key, value]) => (thisCart[key] = value)
-      );
+        writeFileSync(
+          path.join(
+            dbDirectory,
+            `${thisCart._id}.txt`,
+          ),
+          JSON.stringify(thisCart),
+          "utf8"
+        );
+  
+        this.doesCacheneedsUpdate = true
+      }
 
-      thisCart.updatedAt = new Date().toISOString();
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async changeQuantity({ userId, productId, quantity }) {
+    try {
+      
+      const thisCart = deepClone(await this.findByUserId(userId))
+
+      if (!thisCart) throw new Error('wtf')
+
+      const p = thisCart.items.findIndex(item => item.productId == productId)
+    
+      if (p === -1) throw new Error('bad request: no such product exists')
+
+      thisCart.items[p].quantity = quantity
 
       writeFileSync(
         path.join(
           dbDirectory,
           `${thisCart._id}.txt`,
-          ),
-          JSON.stringify(thisCart),
-          "utf8"
+        ),
+        JSON.stringify(thisCart),
+        "utf8"
       );
 
-      this.doesCacheneedsUpdate = true;
+      this.doesCacheneedsUpdate = true
 
-      return "ok";
 
     } catch (error) {
-      throw error;
+      throw error
     }
+
+
+
   }
 
-  
+  async MTCart(userId) {
+    const thisCart = deepClone(await this.findByUserId(userId))
 
-  async calculateTotalPrice (_id) {
-    try {
+    thisCart.items.length = 0
 
-      const allProductsCart = await this.findAll()
+    writeFileSync(
+      path.join(
+        dbDirectory,
+        `${thisCart._id}.txt`,
+      ),
+      JSON.stringify(thisCart),
+      "utf8"
+    );
 
-      const thisProducts = await Product.findAll();
-      
-      const thisCalculatePrice = allProductsCart.reduce((acc, cur) => {
-        const thisProduct = thisProducts.find((product) => product.id == cur.id);
-        return acc + thisProduct.quantity * thisProduct.price
-      })
-
-      return thisCalculatePrice
-      
-    } catch (error) {
-      throw error;
-    }
+    this.doesCacheneedsUpdate = true
   }
+
+
+
+  // async calculateTotalPrice (_id) {
+  //   try {
+
+  //     const allProductsCart = await this.findAll()
+
+  //     const thisProducts = await Product.findAll();
+      
+  //     const thisCalculatePrice = allProductsCart.reduce((acc, cur) => {
+  //       const thisProduct = thisProducts.find((product) => product.id == cur.id);
+  //       return acc + thisProduct.quantity * thisProduct.price
+  //     })
+
+  //     return thisCalculatePrice
+      
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
 }
 

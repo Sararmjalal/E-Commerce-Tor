@@ -18,10 +18,10 @@ if (!existsSync(dbDirectory)) {
 
 /*
 
-  variables: {
-    cpu: ['coreI7'],
-    moreInfo: ['kheyli qashange too jibam ja mishe taze']
-    ports: ['hdmi', 'wifi']
+  "variables": {
+    "cpu": ["coreI7"],
+    "moreInfo": ["kheyli qashange too jibam ja mishe taze"],
+    "ports": ["hdmi", "wifi"]
   }
 
 
@@ -38,8 +38,7 @@ class ProductSchema {
     try {
       
       const { title, price, quantity, description, isAvalible, images, categoryId, variables } = data;
-      print('***************')
-      print(data)
+
       if (
         !title ||
         !price ||
@@ -59,6 +58,7 @@ class ProductSchema {
         print(value)
         if (!Array.isArray(value)) throw new Error('bad input')
       })
+
 
       const thisProduct = {
         _id: UID("ECP"),

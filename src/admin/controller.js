@@ -4,9 +4,6 @@ import Admin from './model'
 import validatePhoneNumber from 'lib/utils/validatePhoneNumber'
 
 export default {
-  home: (req, res) => {
-    res.send('<h1> hello from admin </h1>')
-  },
   createAdmin: async (req, res) => {
   
     print(req.body)
@@ -21,7 +18,6 @@ export default {
       
       return res.json({msg: 'successfully created this admin, yeay!'})
      
-  
     } catch (error) {
       res.status(500).json({msg: error.message})
     }
@@ -46,22 +42,20 @@ export default {
       const token = Admin.createToken(thisAdmin._id)
       return res.json({ token })
   
-  
     } catch (error) {
       res.status(500).json({ msg: error.message })
     }
   },
-  test:  async (req, res) => {
+  me: async (req,res) => {
 
     try {
-  
+
       const thisAdmin = await Admin.authorizeAdmin(req.admin)
-      
-      return res.json(['hello world', 'salam jahan'])
-  
+
+      return res.status(200).json(thisAdmin) 
+
     } catch (error) {
       res.status(500).json({ msg: error.message })
     }
-  
   }
 }
