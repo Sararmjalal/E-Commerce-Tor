@@ -38,6 +38,5 @@ export default {
 
     return res.status(200).json({msg: 'ok'})
 
-    // status 200
   }
 }

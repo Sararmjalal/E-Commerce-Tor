@@ -1,6 +1,7 @@
 import Product from "./model";
 import CategoryModel from "category/model";
-import {requireAdminAuth} from 'lib/utils/adminAuth'
+import { requireAdminAuth } from 'lib/utils/adminAuth'
+import AdminModel from 'admin/model'
 
 export default {
   createProduct: async (req, res) => {
@@ -8,7 +9,7 @@ export default {
 
     try {
 
-      // const thisAdmin = await requireAdminAuth(req.admin)
+      const thisAdmin = await AdminModel.authorizeAdmin(req.admin)
 
       const { categoryId, variables, ...rest } = req.body
       
@@ -31,7 +32,7 @@ export default {
   },
   editProduct: async (req, res) => {
     try {
-      const thisAdmin = await requireAdminAuth(req.admin)
+      const thisAdmin = await AdminModel.authorizeAdmin(req.admin)
 
       if (!req.body.productId || !req.body.data) throw new Error("bad request: bad inputs");
 
