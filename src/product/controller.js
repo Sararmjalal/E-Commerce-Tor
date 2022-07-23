@@ -55,12 +55,13 @@ export default {
     }
   },
   getAllProducts: async (req, res) => {
-
     try {
+      const page = req.body.page ? Number(req.body.page) : 0;
+      const limit = req.body.limit ? Number(req.body.limit) : 10;
+
       const products = deepClone(await Product.findAll());
 
-
-      return res.json(products);
+      return res.json(products.slice(page * limit, (page + 1) * limit));
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
