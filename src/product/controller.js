@@ -5,7 +5,6 @@ import AdminModel from 'admin/model'
 
 export default {
   createProduct: async (req, res) => {
-    print(req.body);
 
     try {
 
@@ -18,7 +17,6 @@ export default {
       const thisCategory = await CategoryModel.findById(categoryId)
       if (thisCategory.del === true) throw new Error('no such category exists in the database') 
 
-      print('category ok  ')
       const thisProduct = await Product.create({ categoryId, variables, ...rest });
       
       return res.status(201).json({
@@ -57,7 +55,7 @@ export default {
     }
   },
   getAllProducts: async (req, res) => {
-    print("get all blog ran");
+
     try {
       const products = deepClone(await Product.findAll());
 
@@ -68,7 +66,7 @@ export default {
     }
   },
   getSingleProduct: async (req, res) => {
-    print("get single blog ran");
+
     try {
       const thisProduct = deepClone(
         await Product.findById(String(req.params._id))
@@ -85,7 +83,7 @@ export default {
     }
   },
   getTopProducts: async (req, res) => {
-    print("0");
+
     try {
 
       const number = req.query.number && !isNaN(Number(req.query.number)) ? Number(req.query.number) : 3

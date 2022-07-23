@@ -59,7 +59,6 @@ class ProductSchema {
         if (!Array.isArray(value)) throw new Error('bad input')
       })
 
-
       const thisProduct = {
         _id: UID("ECP"),
         title,
