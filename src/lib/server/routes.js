@@ -5,8 +5,8 @@ import CommentRouter from "comment/router";
 import CartRouter from "cart/router";
 import CategoryRouter from 'category/router'
 import OrderRouter from 'order/router'
-
 import userRouter from 'user/router'
+import fileRouter from 'file/router'
 
 export default (app) => {
   app.get("/", (req, res, next) => {
@@ -26,7 +26,10 @@ export default (app) => {
   app.use('/category/', CategoryRouter)
 
   app.use('/user/', userRouter)
+
   app.use('/order/', OrderRouter)
+
+  app.use('/file/', fileRouter)
 
 
   app.use((error, req, res, next) => {
