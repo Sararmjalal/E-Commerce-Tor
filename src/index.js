@@ -3,6 +3,7 @@ import { existsSync, mkdirSync } from 'fs'
 import _applyMiddlewares from "lib/server/middlewares";
 import _applyRoutes from "lib/server/routes";
 import 'lib/global'
+import path from 'path'
 
 const app = express();
 

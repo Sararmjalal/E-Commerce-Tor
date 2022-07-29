@@ -39,7 +39,7 @@ const upload = multer({
 
 const router = express.Router()
 
-const authMiddleWare = (req, res, next) => {
+const authMiddleWare = async (req, res, next) => {
   try {
     const thisAdmin = await AdminModel.authorizeAdmin(req.admin)
 
