@@ -20,18 +20,17 @@ export default async (req, res, next) => {
 
     const token = req.headers.auth;
 
-    console.log('token is ', token)
-
     if (token != null) {
-      print('yes')
+
       const user = await decodeToken(token);
-      print(token)
+
       req.user = user;
     } else {
       req.user = null;
     }
     return next(); 
   } catch (error) {
+    
     req.user = null;
     return next(); 
   }

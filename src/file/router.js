@@ -39,20 +39,8 @@ const upload = multer({
 
 const router = express.Router()
 
-const authMiddleWare = async (req, res, next) => {
-  try {
-    const thisAdmin = await AdminModel.authorizeAdmin(req.admin)
 
-    req.thisAdmin = thisAdmin
-  
-    next()
-  } catch (error) {
-    next(error)
-  }
-} 
-
-
-router.post('/upload-reserve', asyncHandler(adminAuth), asyncHandler(authMiddleWare), upload.single('reserve'), async (req, res, next) => {
+router.post('/upload-reserve', asyncHandler(adminAuth), upload.single('reserve'), async (req, res, next) => {
   try {
 
     if (!req.fileName) throw new Error('somethings wrong')

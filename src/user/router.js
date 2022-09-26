@@ -1,20 +1,22 @@
 import express from "express";
 
 import UserController from './controller'
+import asyncHandler from "lib/utils/asyncHandler";
+
 
 const router = express.Router();
 
-router.post('/sign-up-one', UserController.signup_stepOne)
+router.post('/sign-up-one', asyncHandler(UserController.signup_stepOne))
 
-router.post('/sign-up-two', UserController.signup_stepTwo)
+router.post('/sign-up-two', asyncHandler(UserController.signup_stepTwo))
 
-router.post('/login-one', UserController.login_stepOne)
+router.post('/login-one', asyncHandler(UserController.login_stepOne))
 
-router.post('/login-two', UserController.login_stepTwo)
+router.post('/login-two', asyncHandler(UserController.login_stepTwo))
 
-router.post('/me', UserController.me)
+router.post('/me', asyncHandler(UserController.me))
 
-router.post('/edit', UserController.userEdit)
+router.post('/edit', asyncHandler(UserController.userEdit))
 
 // router.get('/', AdminController.home)
 

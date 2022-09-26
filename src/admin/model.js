@@ -180,7 +180,7 @@ class AdminSchema {
     
     if (code !== thisAdmin.authObj.code) throw new Error('wrong code')
 
-    if ((new Date().getTime() - new Date(thisAdmin.authObj.date).getTime) > 200000) throw new Error("time's up")
+    if (((new Date()).getTime() - (new Date(thisAdmin.authObj.date)).getTime()) > 200000) throw new Error("time's up")
     
     this.removeAuthCode(phone)
 
@@ -198,7 +198,19 @@ class AdminSchema {
   }
 }
 
-const AdminModel = new AdminSchema()
+const AdminModel = new AdminSchema();
+
+
+// IFEE
+(async function () {
+  const allAdmins = await AdminModel.findAll()
+  if (Array.isArray(allAdmins) && !allAdmins.length) {
+    await AdminModel.create({
+      name: "master",
+      phone: "+989142309433"
+    })
+  }
+})();
 
 export default AdminModel
 

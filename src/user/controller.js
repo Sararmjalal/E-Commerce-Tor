@@ -8,42 +8,34 @@ const userTemp = {}
 export default {
   signup_stepOne: async (req, res, next) => {
 
-    try {
-      
-      if (!req.body.phone || !req.body.name) throw new Error('bad request: bad inputs')
-      const validPhone = validatePhoneNumber(req.body.phone)
+    if (!req.body.phone || !req.body.name) throw new Error('bad request: bad input')
+    const validPhone = validatePhoneNumber(req.body.phone)
 
-      const doesExist = await UserModel.checkIfUserExists(validPhone)
+    const doesExist = await UserModel.checkIfUserExists(validPhone)
 
-      if (doesExist) throw new Error('this user already exists in the database')
+    if (doesExist) throw new Error('this user already exists in the database')
 
-      const thisData = {
-        name: req.body.name,
-        phone: validPhone
-      }
-
-      thisData.code = '1111'
-      thisData.date = new Date().toISOString()
-      
-      userTemp[thisData.phone] = thisData
-
-      print(userTemp)
-      setTimeout(() => delete userTemp[thisData.phone], 200 * 1000)
-
-      return res.json({ msg: 'ok' })
-      
-    } catch (error) {
-      return res.status(500).json({msg: error.message})
+    const thisData = {
+      name: req.body.name,
+      phone: validPhone
     }
+
+    thisData.code = '1111'
+    thisData.date = new Date().toISOString()
+    
+    userTemp[thisData.phone] = thisData
+
+    setTimeout(() => delete userTemp[thisData.phone], 200 * 1000)
+
+    return res.json({ msg: 'ok' })
+
   },
-  signup_stepTwo: async (req,res,next) => {
+  signup_stepTwo: async (req, res, next) => {
+    
     try {
       
-      if (!req.body.phone || !req.body.code) throw new Error('bad request')
+      if (!req.body.phone || !req.body.code) throw new Error('bad request: bad input')
       const validPhone = validatePhoneNumber(req.body.phone)
-
-      print(userTemp)
-      print(validPhone)
 
       if (!(validPhone in userTemp)) throw new Error("time's up")
 
@@ -72,7 +64,7 @@ export default {
   },
   login_stepOne: async (req,res,next) => {
     try {
-      if (!req.body.phone) throw new Error('bad request: bad inputs')
+      if (!req.body.phone) throw new Error('bad request: bad input')
       const validPhone = validatePhoneNumber(req.body.phone)
 
       await UserModel.generateAuthObject(validPhone)
@@ -84,7 +76,7 @@ export default {
   },
   login_stepTwo: async (req,res,next) => {
     try {
-      if (!req.body.phone || !req.body.code) throw new Error('bad request: bad inputs')
+      if (!req.body.phone || !req.body.code) throw new Error('bad request: bad input')
       const validPhone = validatePhoneNumber(req.body.phone)
 
       const thisUser = await UserModel.checkAuthCode({ code: req.body.code, phone: validPhone })

@@ -3,12 +3,13 @@ import Admin from './model'
 
 import validatePhoneNumber from 'lib/utils/validatePhoneNumber'
 
+
 export default {
   createAdmin: async (req, res) => {
 
     try {
      
-      if (!req.body.phone || !req.body.name) throw new Error('bad input')
+      if (!req.body.phone || !req.body.name) throw new Error('bad request: bad input')
   
       const validPhone = validatePhoneNumber(req.body.phone)
   
@@ -17,7 +18,7 @@ export default {
       return res.json({ msg: 'successfully created this admin, yeay!' })
       
     } catch (error) {
-      res.status(500).json({msg: error.message})
+      res.status(500).json({ msg: error.message })
     }
   },
   loginStepOne:  async (req, res) => {
@@ -46,7 +47,8 @@ export default {
 
     try {
 
-      const thisAdmin = await Admin.authorizeAdmin(req.admin)
+      const thisAdmin = deepClone(req.admin)
+      delete thisAdmin.authObj
 
       return res.status(200).json(thisAdmin) 
 

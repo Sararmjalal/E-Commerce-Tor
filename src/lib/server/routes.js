@@ -39,7 +39,6 @@ export default (app) => {
 
   app.use('/file/', fileRouter)
 
-
   app.use((error, req, res, next) => {
     printError(error.message)
     res.status(500).json({ msg: error.message })
