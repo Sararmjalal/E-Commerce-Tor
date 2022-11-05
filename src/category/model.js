@@ -62,6 +62,10 @@ class CategorySchema {
       })
     })
 
+    const allCat = await this.findAll()
+
+    if (allCat.some(item => item.name == name)) throw new Error('bad request: this name already exists')
+
     const thisCategory = {
       _id: UID('cat'),
       name,
@@ -130,6 +134,26 @@ class CategorySchema {
       return null;
     }
   }
+  
+  async findByIdAndUpdate(_id, data) {
+    try {
+      
+      const thisCategory = await this.findById(_id);
+
+      Object.entries(data).forEach(([key, value]) => thisCategory[key] = value)
+
+      thisCategory.updatedAt = new Date().toISOString();
+
+      writeFileSync(path.join(dbDirectory, `${thisCategory._id}.txt`), JSON.stringify(thisCategory), "utf8");
+      
+      this.doesCacheneedsUpdate = true;
+
+      return "ok";
+
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async compareVariables(_id, variables) {
     try {
@@ -139,7 +163,6 @@ class CategorySchema {
       const thisCategory = await this.findById(_id)
 
       if (!thisCategory) throw new Error('no such category exists in the database')
-
 
       Object.entries(thisCategory.variables).forEach(([key, value]) => {
         if (!(key in variables)) throw new Error(`key ${key} doenst exists in variables `)
@@ -156,6 +179,7 @@ class CategorySchema {
       throw error      
     }
   }
+
   async deleteCategory(_id) {
     try {
 

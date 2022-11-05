@@ -51,7 +51,7 @@ export default {
 
     await AddressModel.findByIdAndUpdate(req.body._id, { deleted: true })
     
-    return res.status(200).json({ msg: 'ok' })
+    return res.status(200).json({ msg: 'ok' });
   },
 
 }

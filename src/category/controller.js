@@ -3,16 +3,13 @@ import Category from './model'
 import Admin from 'admin/model'
 
 export default {
-  createCategory: async (req,res) => {
+  createCategory: async (req, res) => {
+    
     try {
 
       await Admin.authorizeAdmin(req.admin)
   
       const thisCategory = await Category.create({ ...req.body });
-  
-      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
-      print(thisCategory)
-      print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 
       return res.status(201).json({
         msg: "successfully created this category",
@@ -32,5 +29,8 @@ export default {
       return res.status(500).json({ msg: error.message });
   
     }
+  },
+  editCategory: async (req, res) => {
+    
   }
 }

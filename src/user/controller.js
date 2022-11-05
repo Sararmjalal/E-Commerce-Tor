@@ -117,6 +117,15 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  userList: async (req, res) => {
+
+    const { page = 0, limit = 10 } = req.body;
+
+    const allUsers = await UserModel.findAll()
+
+    return res.status(200).json(allUsers.slice(page * limit, (page + 1) * limit));
+    
   }
 
 }

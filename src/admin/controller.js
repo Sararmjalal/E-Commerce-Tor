@@ -21,8 +21,11 @@ export default {
       res.status(500).json({ msg: error.message })
     }
   },
-  loginStepOne:  async (req, res) => {
+  loginStepOne: async (req, res) => {
+    
     try {
+
+      if (!req.body.phone)  throw new Error('bad request: bad input')
       
       await Admin.generateAuthObject(req.body.phone)
   

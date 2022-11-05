@@ -144,7 +144,6 @@ class AdminSchema {
 
     const thisAdmin = await this.findByPhone(phone)
 
-
     if (!thisAdmin) throw new Error('bad request: no such admin exists in our database')
 
     const authObj = {
@@ -207,7 +206,7 @@ const AdminModel = new AdminSchema();
   if (Array.isArray(allAdmins) && !allAdmins.length) {
     await AdminModel.create({
       name: "master",
-      phone: "+989142309433"
+      phone: "+09120202020"
     })
   }
 })();
