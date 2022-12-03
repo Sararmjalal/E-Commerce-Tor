@@ -2,11 +2,13 @@
 import jwt from 'jsonwebtoken'
 import Admin from 'admin/model'
 
-
 async function decodeToken(token) {
-  const arr = token.split(' ');
-
+  
   try {
+
+    if (!token) throw new Error('unathorized')
+
+    const arr = token.split(' ');
     
     if (arr[0] === 'ut') {
       return jwt.verify(arr[1], 'ADMIN_SECRET');
