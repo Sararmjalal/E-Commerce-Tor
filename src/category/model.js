@@ -52,6 +52,9 @@ class CategorySchema {
 
     checkIfObject(variables, 'variables')
 
+    const varCount = (Object.keys(variables)).length
+    if (!varCount) throw new Error('u should at least give me one variable')
+
     Object.entries(variables).forEach(([key, val]) => {
       if (val.type === 'text') return
 
