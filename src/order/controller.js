@@ -5,6 +5,7 @@ import pricifyCart from "lib/utils/cart/pricify-cart";
 import CartModel from "cart/model";
 import ProductModel from "product/model";
 import OrderModel from "./model";
+import AddressModel from 'address/model';
 
 export default {
   
@@ -12,8 +13,13 @@ export default {
     
     const thisUser = await UserModel.authorizeUser(req.user)  
 
-  
-    const theseOrders = await OrderModel.findByUserId(thisUser._id)
+    const theseOrders = deepClone(await OrderModel.findByUserId(thisUser._id))
+
+    for (let [index, item] of arr.entries()) {
+      
+      const thisAddress = await AddressModel.findById(item.addressId)
+      theseOrders[index].address = thisAddress
+    }
 
     res.status(200).json(theseOrders)
   },

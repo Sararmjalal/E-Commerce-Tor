@@ -7,10 +7,10 @@ import {
 } from "fs";
 import path from "path";
 import UID from "lib/utils/UID";
+import AddressModel from 'address/model'
 
 
 const dbDirectory = path.join(process.cwd(), "/src/order/db");
-
 
 if (!existsSync(dbDirectory)) {
   mkdirSync(dbDirectory)
@@ -22,15 +22,20 @@ class OrderSchema {
     this.doesCacheneedsUpdate = true;
   }
 
-  async create({ cart, userId }) {
+  async create({ cart, userId, addressId }) {
     if (!cart || !userId) throw new Error('bad input')
 
-    const len = (await this.findAll()).length
+    const len = (await this.findAll()).length;
+
+    const thisAddress = await AddressModel.findById(addressId)
+
+    if (!thisAddress || thisAddress.userId !== userId) throw new Error('bad request: request lacks userId')
     
     const thisOrder = {
       _id: UID('ECO'),
       cart,
       userId,
+      addressId,
       sn: 100001 + len,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
