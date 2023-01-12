@@ -23,7 +23,7 @@ class CartSchema {
     this.doesCacheneedsUpdate = true;
   }
 
-  async addToCart({ productId, userId, quantity, thisVariables }) {
+  async addToCart({ productId, userId, quantity }) {
     
     try {
       
@@ -47,24 +47,9 @@ class CartSchema {
         if (!thisProduct.isAvailable) throw Error('Product not available')
         if (thisProduct.quantity < quantity) throw Error('Not enough product!')
         
-        const variableKeys = Object.keys(thisProduct.variables)
-        const keysRight = variableKeys.every(key => !!thisVariables[key])
-        
-        if (!keysRight) throw Error('Variable keys not right')
-
-        const variablesRight = variableKeys.every(key => {
-          const checkOptions = thisProduct.variables[key].some(item => {
-            return thisVariables[key][0] === item
-          })
-          return checkOptions
-        })
-
-        if (!variablesRight) throw Error('Variable options not right')
-        
         thisCart.items.push({
           productId,
           quantity,
-          thisVariables
         })
       }
       
