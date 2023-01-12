@@ -67,6 +67,8 @@ class CartSchema {
           thisVariables
         })
       }
+      
+      thisCart['total'] = await this.calculateTotalPrice(userId)
 
       writeFileSync(
         path.join(
@@ -118,7 +120,7 @@ class CartSchema {
       throw error
     }
   }
-
+ 
   async removeItem({ userId, productId }) {
     
     try {
@@ -131,6 +133,8 @@ class CartSchema {
 
       if (p != -1) {
         thisCart.items.splice(p, 1)
+
+        thisCart['total'] = await this.calculateTotalPrice(userId)
 
         writeFileSync(
           path.join(
@@ -165,6 +169,8 @@ class CartSchema {
       if (quantity <= 0) throw Error('not allowed lool')
 
       thisCart.items[p].quantity = quantity
+
+      thisCart['total'] = await this.calculateTotalPrice(userId)
 
       writeFileSync(
         path.join(
@@ -203,26 +209,22 @@ class CartSchema {
     this.doesCacheneedsUpdate = true
   }
 
+  async calculateTotalPrice (userId) {
+    try {
 
-
-  // async calculateTotalPrice (_id) {
-  //   try {
-
-  //     const allProductsCart = await this.findAll()
-
-  //     const thisProducts = await Product.findAll();
+      const thisCart = await this.findByUserId(userId)
       
-  //     const thisCalculatePrice = allProductsCart.reduce((acc, cur) => {
-  //       const thisProduct = thisProducts.find((product) => product.id == cur.id);
-  //       return acc + thisProduct.quantity * thisProduct.price
-  //     })
+      const totalPrice = thisCart.items.reduce(async(acc, cur) => {
+        const thisProduct = await ProductModel.findById(cur.productId)
+        return acc + thisProduct.price * cur.quantity
+      }, 0)
 
-  //     return thisCalculatePrice
+      return totalPrice
       
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+    } catch (error) {
+      throw error;
+    }
+  }
 
 }
 
